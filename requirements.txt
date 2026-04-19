@@ -1,0 +1,4 @@
+kivy>=2.1.0
+cryptography>=41.0
+opencv-python>=4.8.0
+plyer>=2.0.0

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hostel Biometric Software</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-icon">🏨</span>
+        <div>
+          <h1>Hostel Biometric</h1>
+          <p>Student attendance & biometric access</p>
+        </div>
+      </div>
+      <button class="nav-toggle" id="nav-toggle">☰</button>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="panel-title">Menu</div>
+      <button class="nav-button active" data-page="dashboard">Dashboard</button>
+      <button class="nav-button" data-page="students">Students</button>
+      <button class="nav-button" data-page="attendance">Attendance</button>
+      <button class="nav-button" data-page="reports">Reports</button>
+      <button class="nav-button" data-page="settings">Admin</button>
+    </aside>
+
+    <main class="content">
+      <section class="page" id="dashboard-page">
+        <div class="page-header">
+          <div>
+            <h2>Dashboard</h2>
+            <p>Mobile-friendly biometric hostel management overview.</p>
+          </div>
+          <div class="status-pill">Live</div>
+        </div>
+
+        <div class="tiles">
+          <article class="tile tile-blue">
+            <span class="tile-label">Students</span>
+            <strong id="summary-students">0</strong>
+          </article>
+          <article class="tile tile-teal">
+            <span class="tile-label">Biometric Profiles</span>
+            <strong id="summary-biometrics">0</strong>
+          </article>
+          <article class="tile tile-orange">
+            <span class="tile-label">Attendance Logs</span>
+            <strong id="summary-logs">0</strong>
+          </article>
+          <article class="tile tile-green">
+            <span class="tile-label">Alerts</span>
+            <strong id="summary-alerts">0</strong>
+          </article>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>Quick Access</h3>
+            <p>Use mobile biometric hardware or manual credentials to manage hostel access.</p>
+            <div class="button-group">
+              <button onclick="performBiometricLogin('fingerprint')">Fingerprint Login</button>
+              <button onclick="performBiometricLogin('face')">Face Login</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Late Entry Monitoring</h3>
+            <p>Track entry timestamps and notify the warden if students arrive after 9:00 AM.</p>
+            <button class="secondary" onclick="generateReport('daily')">View Today’s Report</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="page hidden" id="students-page">
+        <div class="page-header">
+          <div>
+            <h2>Student Management</h2>
+            <p>Register, edit, delete students and enroll biometric identities.</p>
+          </div>
+          <button onclick="showStudentForm()">+ Add Student</button>
+        </div>
+
+        <div class="form-grid">
+          <div class="card wide" id="student-form-card">
+            <h3 id="student-form-title">Enroll Student</h3>
+            <div class="form-row">
+              <label>Name</label>
+              <input id="student-name" type="text" placeholder="Student Name" />
+            </div>
+            <div class="form-row">
+              <label>Roll No</label>
+              <input id="student-roll" type="text" placeholder="Roll Number" />
+            </div>
+            <div class="form-row">
+              <label>Room No</label>
+              <input id="student-room" type="text" placeholder="Room Number" />
+            </div>
+            <div class="form-row">
+              <label>Contact</label>
+              <input id="student-phone" type="text" placeholder="Phone or Email" />
+            </div>
+            <div class="button-group">
+              <button onclick="saveStudent()">Save Student</button>
+              <button class="secondary" onclick="resetStudentForm()">Reset</button>
+            </div>
+            <div id="biometric-enrollment" class="biometric-section">
+              <div class="bio-buttons">
+                <button onclick="startFingerprintEnrollment()">Enroll Fingerprint (WebAuthn)</button>
+                <button onclick="startFaceEnrollment()">Enroll Face (Camera)</button>
+              </div>
+              <div id="camera-container" class="camera-container hidden">
+                <video id="camera-preview" playsinline autoplay></video>
+                <canvas id="face-capture-canvas" style="display:none;"></canvas>
+                <div class="camera-controls">
+                  <button onclick="captureFaceImage()">📸 Capture</button>
+                  <button class="secondary" onclick="stopCamera()">✕ Cancel</button>
+                </div>
+              </div>
+              <div id="enrollment-status" class="enrollment-status hidden"></div>
+            </div>
+          </div>
+
+          <div class="card wide" id="student-list-card">
+            <h3>Registered Students</h3>
+            <div id="student-list" class="data-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page hidden" id="attendance-page">
+        <div class="page-header">
+          <div>
+            <h2>Attendance Logs</h2>
+            <p>Review entry/exit history, late status and generate email alerts.</p>
+          </div>
+          <button onclick="loadAttendance()">Refresh</button>
+        </div>
+        <div class="card">
+          <h3>Recent Attendance</h3>
+          <div id="attendance-list" class="data-list"></div>
+        </div>
+      </section>
+
+      <section class="page hidden" id="reports-page">
+        <div class="page-header">
+          <div>
+            <h2>Reports</h2>
+            <p>Daily and monthly attendance reports for admin review.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="form-row">
+            <label>Period</label>
+            <select id="report-period">
+              <option value="daily">Daily</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Date</label>
+            <input id="report-date" type="date" />
+          </div>
+          <div class="button-group">
+            <button onclick="generateReport(document.getElementById('report-period').value)">Generate</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Report Output</h3>
+          <pre id="report-output" class="report-box">No report generated yet.</pre>
+        </div>
+      </section>
+
+      <section class="page hidden" id="settings-page">
+        <div class="page-header">
+          <div>
+            <h2>Admin Panel</h2>
+            <p>Secure login, role-based access, and warden notifications.</p>
+          </div>
+        </div>
+        <div class="card wide">
+          <div class="form-row">
+            <label>Admin Username</label>
+            <input id="admin-username" type="text" placeholder="admin" value="admin" />
+          </div>
+          <div class="form-row">
+            <label>Admin Password</label>
+            <input id="admin-password" type="password" placeholder="Password" />
+          </div>
+          <div class="button-group">
+            <button onclick="adminLogin()">Secure Login</button>
+            <button class="secondary" onclick="logOut()">Logout</button>
+          </div>
+          <p class="hint">Use built-in biometric actions for student entry, and the admin panel for monitoring.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="app.js"></script>
+</body>
+</html>

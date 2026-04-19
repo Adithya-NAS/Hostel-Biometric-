@@ -1,0 +1,345 @@
+ScreenManager:
+    LoginScreen:
+    DashboardScreen:
+    StudentMgmtScreen:
+    AttendanceScreen:
+    ReportScreen:
+
+<LoginScreen>:
+    name: 'login'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 18
+        spacing: 12
+        canvas.before:
+            Color:
+                rgba: 0.08, 0.18, 0.28, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: 'Hostel Biometric Security'
+            font_size: '28sp'
+            size_hint_y: None
+            height: self.texture_size[1] + 20
+            color: 0.95, 0.88, 0.65, 1
+        Label:
+            text: 'Admin Login'
+            size_hint_y: None
+            height: 30
+            color: 0.86, 0.92, 0.98, 1
+        TextInput:
+            id: admin_username
+            hint_text: 'Username'
+            multiline: False
+            size_hint_y: None
+            height: 46
+        TextInput:
+            id: admin_password
+            hint_text: 'Password'
+            password: True
+            multiline: False
+            size_hint_y: None
+            height: 46
+        Button:
+            text: 'Login as Admin'
+            size_hint_y: None
+            height: 50
+            on_press: app.admin_login(admin_username.text, admin_password.text)
+        Label:
+            text: app.message
+            color: 0.98, 0.75, 0.30, 1
+            size_hint_y: None
+            height: self.texture_size[1] + 10
+        Label:
+            text: 'Student biometric access'
+            size_hint_y: None
+            height: 30
+            color: 0.92, 0.92, 0.92, 1
+        BoxLayout:
+            spacing: 12
+            size_hint_y: None
+            height: 50
+            Button:
+                text: 'Fingerprint Login'
+                on_press: app.biometric_login('fingerprint')
+            Button:
+                text: 'Face Login'
+                on_press: app.biometric_login('face')
+        Widget:
+        Button:
+            text: 'Guest: Manage Students'
+            size_hint_y: None
+            height: 50
+            on_press: root.manager.current = 'student_mgmt'
+
+<DashboardScreen>:
+    name: 'dashboard'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 14
+        spacing: 10
+        canvas.before:
+            Color:
+                rgba: 0.06, 0.12, 0.20, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: 'Hostel Admin Dashboard'
+            font_size: '26sp'
+            size_hint_y: None
+            height: self.texture_size[1] + 18
+            color: 0.93, 0.94, 0.98, 1
+        GridLayout:
+            cols: 3
+            spacing: 10
+            size_hint_y: None
+            height: 120
+            canvas.before:
+                Color:
+                    rgba: 0.10, 0.16, 0.28, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [16]
+            BoxLayout:
+                orientation: 'vertical'
+                padding: 8
+                Label:
+                    text: 'Students'
+                    color: 0.84, 0.94, 0.96, 1
+                Label:
+                    id: total_students
+                    text: '0'
+                    font_size: '24sp'
+                    color: 0.94, 0.63, 0.29, 1
+            BoxLayout:
+                orientation: 'vertical'
+                padding: 8
+                Label:
+                    text: 'Logs'
+                    color: 0.84, 0.94, 0.96, 1
+                Label:
+                    id: total_logs
+                    text: '0'
+                    font_size: '24sp'
+                    color: 0.42, 0.76, 0.79, 1
+            BoxLayout:
+                orientation: 'vertical'
+                padding: 8
+                Label:
+                    text: 'Biometrics'
+                    color: 0.84, 0.94, 0.96, 1
+                Label:
+                    id: total_biometrics
+                    text: '0'
+                    font_size: '24sp'
+                    color: 0.84, 0.52, 0.93, 1
+        GridLayout:
+            cols: 2
+            spacing: 10
+            size_hint_y: None
+            height: 220
+            Button:
+                text: 'Student Management'
+                on_press: root.manager.current = 'student_mgmt'
+            Button:
+                text: 'Attendance Logs'
+                on_press: root.manager.current = 'attendance'
+            Button:
+                text: 'Generate Report'
+                on_press: root.manager.current = 'report'
+            Button:
+                text: 'Logout'
+                on_press: root.manager.current = 'login'
+
+<StudentMgmtScreen>:
+    name: 'student_mgmt'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 14
+        spacing: 10
+        canvas.before:
+            Color:
+                rgba: 0.08, 0.18, 0.24, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: 'Student Registration & Biometric Enrollment'
+            font_size: '20sp'
+            size_hint_y: None
+            height: self.texture_size[1] + 12
+            color: 0.95, 0.92, 0.80, 1
+        GridLayout:
+            cols: 2
+            spacing: 10
+            size_hint_y: None
+            height: 370
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: 10
+                TextInput:
+                    id: student_id
+                    hint_text: 'Student ID (for edit/delete)'
+                    multiline: False
+                    size_hint_y: None
+                    height: 44
+                TextInput:
+                    id: student_name
+                    hint_text: 'Full Name'
+                    multiline: False
+                    size_hint_y: None
+                    height: 44
+                TextInput:
+                    id: student_roll
+                    hint_text: 'Roll Number'
+                    multiline: False
+                    size_hint_y: None
+                    height: 44
+                TextInput:
+                    id: student_room
+                    hint_text: 'Room Number'
+                    multiline: False
+                    size_hint_y: None
+                    height: 44
+                TextInput:
+                    id: student_phone
+                    hint_text: 'Contact Phone'
+                    multiline: False
+                    size_hint_y: None
+                    height: 44
+                BoxLayout:
+                    spacing: 8
+                    size_hint_y: None
+                    height: 50
+                    Button:
+                        text: 'Save Student'
+                        on_press: app.save_student(student_id.text, student_name.text, student_roll.text, student_room.text, student_phone.text)
+                    Button:
+                        text: 'Delete'
+                        on_press: app.delete_student(student_id.text)
+                BoxLayout:
+                    spacing: 8
+                    size_hint_y: None
+                    height: 50
+                    Button:
+                        text: 'Enroll Fingerprint'
+                        on_press: app.enroll_biometric(student_roll.text, 'fingerprint')
+                    Button:
+                        text: 'Enroll Face'
+                        on_press: app.enroll_biometric(student_roll.text, 'face')
+            ScrollView:
+                do_scroll_x: False
+                Label:
+                    id: student_list
+                    text: 'Loading student records...'
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    valign: 'top'
+                    color: 0.98, 0.98, 0.98, 1
+        Label:
+            text: app.message
+            size_hint_y: None
+            height: self.texture_size[1] + 8
+            color: 0.97, 0.78, 0.34, 1
+        GridLayout:
+            cols: 2
+            spacing: 10
+            size_hint_y: None
+            height: 48
+            Button:
+                text: 'Dashboard'
+                on_press: root.manager.current = 'dashboard'
+            Button:
+                text: 'Attendance'
+                on_press: root.manager.current = 'attendance'
+
+<AttendanceScreen>:
+    name: 'attendance'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 14
+        spacing: 10
+        canvas.before:
+            Color:
+                rgba: 0.07, 0.14, 0.20, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: 'Entry / Exit Attendance Log'
+            font_size: '22sp'
+            size_hint_y: None
+            height: self.texture_size[1] + 12
+            color: 0.94, 0.92, 0.76, 1
+        BoxLayout:
+            spacing: 10
+            size_hint_y: None
+            height: 48
+            Button:
+                text: 'Refresh Logs'
+                on_press: app.load_attendance_logs()
+            Button:
+                text: 'Back'
+                on_press: root.manager.current = 'dashboard'
+        ScrollView:
+            Label:
+                id: attendance_list
+                text: 'Loading attendance log...'
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                valign: 'top'
+                color: 0.94, 0.96, 0.98, 1
+
+<ReportScreen>:
+    name: 'report'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 14
+        spacing: 10
+        canvas.before:
+            Color:
+                rgba: 0.07, 0.12, 0.18, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: 'Attendance Reports'
+            font_size: '22sp'
+            size_hint_y: None
+            height: self.texture_size[1] + 12
+            color: 0.92, 0.90, 0.80, 1
+        GridLayout:
+            cols: 3
+            spacing: 10
+            size_hint_y: None
+            height: 48
+            Spinner:
+                id: report_period
+                text: 'daily'
+                values: ['daily', 'monthly']
+            TextInput:
+                id: report_date
+                hint_text: 'YYYY-MM-DD'
+                multiline: False
+            Button:
+                text: 'Generate'
+                on_press: app.generate_report(report_period.text, report_date.text)
+        ScrollView:
+            Label:
+                id: report_body
+                text: 'Select a period and press Generate.'
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                valign: 'top'
+                color: 0.94, 0.94, 0.96, 1
+        Button:
+            text: 'Back to Dashboard'
+            size_hint_y: None
+            height: 50
+            on_press: root.manager.current = 'dashboard'
